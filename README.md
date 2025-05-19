@@ -1,1 +1,1 @@
-# Condition2Cure
+# Predicting Health Conditions and Matching Top Drugs
