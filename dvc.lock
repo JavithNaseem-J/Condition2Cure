@@ -1,0 +1,278 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python main.py --stage data_ingestion
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: db12a17038d84bab969e6638f7ba45db
+      size: 1552
+    - path: main.py
+      hash: md5
+      md5: f482c5c6796076a779657f986f5e2ec6
+      size: 2227
+    - path: src/Condition2Cure/components/data_ingestion.py
+      hash: md5
+      md5: 89e341693d8caf0093572c69b6f6e9cf
+      size: 1006
+    - path: src/Condition2Cure/config/config.py
+      hash: md5
+      md5: c6fd81e6269efafd5c7873d9e741040e
+      size: 4250
+    - path: src/Condition2Cure/entities/config_entity.py
+      hash: md5
+      md5: a87b4068418aedaf1b3c398c0477ab00
+      size: 1202
+    - path: src/Condition2Cure/utils/helpers.py
+      hash: md5
+      md5: ba9aac9a9b63a086dc8deffbc91da62d
+      size: 2958
+    outs:
+    - path: artifacts/data_ingestion/Drugs_Data.csv
+      hash: md5
+      md5: d9342e829ac668ab4ee16b9f8623693e
+      size: 82990470
+  data_validation:
+    cmd: python main.py --stage data_validation
+    deps:
+    - path: artifacts/data_ingestion/Drugs_Data.csv
+      hash: md5
+      md5: d9342e829ac668ab4ee16b9f8623693e
+      size: 82990470
+    - path: config/config.yaml
+      hash: md5
+      md5: db12a17038d84bab969e6638f7ba45db
+      size: 1552
+    - path: config/schema.yaml
+      hash: md5
+      md5: 6b1618317c0c568b852130619535d884
+      size: 162
+    - path: main.py
+      hash: md5
+      md5: f482c5c6796076a779657f986f5e2ec6
+      size: 2227
+    - path: src/Condition2Cure/components/data_validation.py
+      hash: md5
+      md5: c1e6d110cfc4e826ec301cdec6b4d513
+      size: 957
+    - path: src/Condition2Cure/config/config.py
+      hash: md5
+      md5: c6fd81e6269efafd5c7873d9e741040e
+      size: 4250
+    - path: src/Condition2Cure/entities/config_entity.py
+      hash: md5
+      md5: a87b4068418aedaf1b3c398c0477ab00
+      size: 1202
+    - path: src/Condition2Cure/utils/helpers.py
+      hash: md5
+      md5: ba9aac9a9b63a086dc8deffbc91da62d
+      size: 2958
+    outs:
+    - path: artifacts/data_validation/status.json
+      hash: md5
+      md5: ff7a727a93eafadc201e73379dc6f542
+      size: 35
+  data_cleaning:
+    cmd: python main.py --stage data_cleaning
+    deps:
+    - path: artifacts/data_ingestion/Drugs_Data.csv
+      hash: md5
+      md5: d9342e829ac668ab4ee16b9f8623693e
+      size: 82990470
+    - path: config/config.yaml
+      hash: md5
+      md5: db12a17038d84bab969e6638f7ba45db
+      size: 1552
+    - path: config/schema.yaml
+      hash: md5
+      md5: 6b1618317c0c568b852130619535d884
+      size: 162
+    - path: main.py
+      hash: md5
+      md5: f482c5c6796076a779657f986f5e2ec6
+      size: 2227
+    - path: src/Condition2Cure/components/data_cleaning.py
+      hash: md5
+      md5: 8dcec460e14e16aaad7ef80807a23f6c
+      size: 1337
+    - path: src/Condition2Cure/config/config.py
+      hash: md5
+      md5: c6fd81e6269efafd5c7873d9e741040e
+      size: 4250
+    - path: src/Condition2Cure/entities/config_entity.py
+      hash: md5
+      md5: a87b4068418aedaf1b3c398c0477ab00
+      size: 1202
+    - path: src/Condition2Cure/utils/helpers.py
+      hash: md5
+      md5: ba9aac9a9b63a086dc8deffbc91da62d
+      size: 2958
+    - path: src/Condition2Cure/utils/nlp_utils.py
+      hash: md5
+      md5: 09625e080dedf2ab5192ba3626db7764
+      size: 660
+    outs:
+    - path: artifacts/data_cleaning/cleaned.csv
+      hash: md5
+      md5: f11f91fb5b30e9086dbae7f2f3a9f753
+      size: 50602349
+  data_transformation:
+    cmd: python main.py --stage data_transformation
+    deps:
+    - path: artifacts/data_cleaning/cleaned.csv
+      hash: md5
+      md5: f11f91fb5b30e9086dbae7f2f3a9f753
+      size: 50602349
+    - path: config/config.yaml
+      hash: md5
+      md5: db12a17038d84bab969e6638f7ba45db
+      size: 1552
+    - path: config/params.yaml
+      hash: md5
+      md5: 13c1dac91d49208c76d44a4a3f9ede3a
+      size: 150
+    - path: config/schema.yaml
+      hash: md5
+      md5: 6b1618317c0c568b852130619535d884
+      size: 162
+    - path: main.py
+      hash: md5
+      md5: f482c5c6796076a779657f986f5e2ec6
+      size: 2227
+    - path: src/Condition2Cure/components/data_transformation.py
+      hash: md5
+      md5: 0f3c12a9ae1ab3851048e35a712ea975
+      size: 1984
+    - path: src/Condition2Cure/config/config.py
+      hash: md5
+      md5: c6fd81e6269efafd5c7873d9e741040e
+      size: 4250
+    - path: src/Condition2Cure/entities/config_entity.py
+      hash: md5
+      md5: a87b4068418aedaf1b3c398c0477ab00
+      size: 1202
+    - path: src/Condition2Cure/utils/helpers.py
+      hash: md5
+      md5: ba9aac9a9b63a086dc8deffbc91da62d
+      size: 2958
+    outs:
+    - path: artifacts/feature_engineering/X.npy
+      hash: md5
+      md5: 12505f5993bb05d0bf733c683fcf3eaf
+      size: 144885728
+    - path: artifacts/feature_engineering/label_encoder.pkl
+      hash: md5
+      md5: 9676e0f155451c6d5e6484e58bdd8ded
+      size: 567
+    - path: artifacts/feature_engineering/svd.pkl
+      hash: md5
+      md5: 9446824916b82768822eb75c20546bf9
+      size: 24007943
+    - path: artifacts/feature_engineering/vectorizer.pkl
+      hash: md5
+      md5: fa46e06f6e15be6a72262aed2e45d626
+      size: 398287
+    - path: artifacts/feature_engineering/y.npy
+      hash: md5
+      md5: b3ca1dad05bb9fd64f2a0388543b78d1
+      size: 483080
+  model_training:
+    cmd: python main.py --stage model_training
+    deps:
+    - path: artifacts/feature_engineering/X.npy
+      hash: md5
+      md5: 12505f5993bb05d0bf733c683fcf3eaf
+      size: 144885728
+    - path: artifacts/feature_engineering/y.npy
+      hash: md5
+      md5: b3ca1dad05bb9fd64f2a0388543b78d1
+      size: 483080
+    - path: config/config.yaml
+      hash: md5
+      md5: db12a17038d84bab969e6638f7ba45db
+      size: 1552
+    - path: config/params.yaml
+      hash: md5
+      md5: 13c1dac91d49208c76d44a4a3f9ede3a
+      size: 150
+    - path: config/schema.yaml
+      hash: md5
+      md5: 6b1618317c0c568b852130619535d884
+      size: 162
+    - path: main.py
+      hash: md5
+      md5: f482c5c6796076a779657f986f5e2ec6
+      size: 2227
+    - path: src/Condition2Cure/components/model_training.py
+      hash: md5
+      md5: 7833d0df43629f085317ddb57b4798ce
+      size: 4085
+    - path: src/Condition2Cure/config/config.py
+      hash: md5
+      md5: c6fd81e6269efafd5c7873d9e741040e
+      size: 4250
+    - path: src/Condition2Cure/entities/config_entity.py
+      hash: md5
+      md5: a87b4068418aedaf1b3c398c0477ab00
+      size: 1202
+    outs:
+    - path: artifacts/model_training/model.joblib
+      hash: md5
+      md5: 331f83dd23734b81c3b99e776ca120f9
+      size: 6217381
+  model_evaluation:
+    cmd: python main.py --stage model_evaluation
+    deps:
+    - path: artifacts/feature_engineering/X.npy
+      hash: md5
+      md5: 12505f5993bb05d0bf733c683fcf3eaf
+      size: 144885728
+    - path: artifacts/feature_engineering/label_encoder.pkl
+      hash: md5
+      md5: 9676e0f155451c6d5e6484e58bdd8ded
+      size: 567
+    - path: artifacts/feature_engineering/y.npy
+      hash: md5
+      md5: b3ca1dad05bb9fd64f2a0388543b78d1
+      size: 483080
+    - path: artifacts/model_training/model.joblib
+      hash: md5
+      md5: 331f83dd23734b81c3b99e776ca120f9
+      size: 6217381
+    - path: config/config.yaml
+      hash: md5
+      md5: db12a17038d84bab969e6638f7ba45db
+      size: 1552
+    - path: config/params.yaml
+      hash: md5
+      md5: 13c1dac91d49208c76d44a4a3f9ede3a
+      size: 150
+    - path: config/schema.yaml
+      hash: md5
+      md5: 6b1618317c0c568b852130619535d884
+      size: 162
+    - path: main.py
+      hash: md5
+      md5: f482c5c6796076a779657f986f5e2ec6
+      size: 2227
+    - path: src/Condition2Cure/components/model_evaluation.py
+      hash: md5
+      md5: acb55081b431bd7ace3afdc2db68480e
+      size: 3992
+    - path: src/Condition2Cure/config/config.py
+      hash: md5
+      md5: c6fd81e6269efafd5c7873d9e741040e
+      size: 4250
+    - path: src/Condition2Cure/entities/config_entity.py
+      hash: md5
+      md5: a87b4068418aedaf1b3c398c0477ab00
+      size: 1202
+    outs:
+    - path: artifacts/model_evaluation/cm.png
+      hash: md5
+      md5: 9af83bae28a6b5fde1b3fa5dc931deac
+      size: 26032
+    - path: artifacts/model_evaluation/metrics.json
+      hash: md5
+      md5: 402cae855f1aa927f0a22ec72505b333
+      size: 293

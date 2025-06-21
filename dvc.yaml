@@ -1,0 +1,95 @@
+stages:
+
+  data_ingestion:
+    cmd: python main.py --stage data_ingestion
+    deps:
+      - main.py
+      - config/config.yaml
+      - src/Condition2Cure/entities/config_entity.py
+      - src/Condition2Cure/config/config.py
+      - src/Condition2Cure/components/data_ingestion.py
+      - src/Condition2Cure/utils/helpers.py
+    outs:
+      - artifacts/data_ingestion/Drugs_Data.csv
+
+  data_validation:
+    cmd: python main.py --stage data_validation
+    deps:
+      - main.py
+      - config/config.yaml
+      - config/schema.yaml
+      - src/Condition2Cure/entities/config_entity.py
+      - src/Condition2Cure/config/config.py
+      - src/Condition2Cure/components/data_validation.py
+      - src/Condition2Cure/utils/helpers.py
+      - artifacts/data_ingestion/Drugs_Data.csv
+    outs:
+      - artifacts/data_validation/status.json
+
+  data_cleaning:
+    cmd: python main.py --stage data_cleaning
+    deps:
+      - main.py
+      - config/config.yaml
+      - config/schema.yaml
+      - src/Condition2Cure/entities/config_entity.py
+      - src/Condition2Cure/config/config.py
+      - src/Condition2Cure/components/data_cleaning.py
+      - src/Condition2Cure/utils/helpers.py
+      - src/Condition2Cure/utils/nlp_utils.py
+      - artifacts/data_ingestion/Drugs_Data.csv
+    outs:
+      - artifacts/data_cleaning/cleaned.csv
+
+  data_transformation:
+    cmd: python main.py --stage data_transformation
+    deps:
+      - main.py
+      - config/config.yaml
+      - config/schema.yaml
+      - config/params.yaml
+      - src/Condition2Cure/entities/config_entity.py
+      - src/Condition2Cure/config/config.py
+      - src/Condition2Cure/components/data_transformation.py
+      - src/Condition2Cure/utils/helpers.py
+      - artifacts/data_cleaning/cleaned.csv
+    outs:
+      - artifacts/feature_engineering/X.npy
+      - artifacts/feature_engineering/y.npy
+      - artifacts/feature_engineering/vectorizer.pkl
+      - artifacts/feature_engineering/svd.pkl
+      - artifacts/feature_engineering/label_encoder.pkl
+
+  model_training:
+    cmd: python main.py --stage model_training
+    deps:
+      - main.py
+      - config/config.yaml
+      - config/schema.yaml
+      - config/params.yaml
+      - src/Condition2Cure/entities/config_entity.py
+      - src/Condition2Cure/config/config.py
+      - src/Condition2Cure/components/model_training.py
+      - artifacts/feature_engineering/X.npy
+      - artifacts/feature_engineering/y.npy
+    outs:
+      - artifacts/model_training/model.joblib
+
+  model_evaluation:
+    cmd: python main.py --stage model_evaluation
+    deps:
+      - main.py
+      - config/config.yaml
+      - config/schema.yaml
+      - config/params.yaml
+      - src/Condition2Cure/entities/config_entity.py
+      - src/Condition2Cure/config/config.py
+      - src/Condition2Cure/components/model_evaluation.py
+      - artifacts/feature_engineering/X.npy
+      - artifacts/feature_engineering/y.npy
+      - artifacts/model_training/model.joblib
+      - artifacts/feature_engineering/label_encoder.pkl
+    outs:
+      - artifacts/model_evaluation/cm.png
+    metrics:
+      - artifacts/model_evaluation/metrics.json

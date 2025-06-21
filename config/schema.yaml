@@ -1,0 +1,11 @@
+columns:
+  uniqueID: int
+  drugName: str
+  condition: str
+  review: str
+  rating: float
+  date: str
+  usefulCount: int
+
+target_column:
+  name: condition
