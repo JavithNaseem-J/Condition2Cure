@@ -1,7 +1,14 @@
 from pathlib import Path
 from src.Condition2Cure.constants import *
 from Condition2Cure.utils.helpers import *
-from Condition2Cure.entities.config_entity import DataIngestionConfig, DataValidationConfig, DataCleaningConfig, DataTransformationConfig, ModelTrainerConfig, ModelEvaluationConfig
+from Condition2Cure.entities.config_entity import (DataIngestionConfig, 
+                                                   DataValidationConfig, 
+                                                   DataCleaningConfig, 
+                                                   DataTransformationConfig, 
+                                                   ModelTrainerConfig, 
+                                                   ModelEvaluationConfig,
+                                                   ModelRegistryConfig,
+                                                   DriftMonitoringConfig)
 
 
 
@@ -124,3 +131,29 @@ class ConfigurationManager:
         )
 
         return model_evaluation_config
+    
+
+
+    def get_model_registry_config(self) -> ModelRegistryConfig:
+        config = self.config.model_registry
+
+
+        model_registry_config =  ModelRegistryConfig(
+            model_name=config.model_name,
+            metric_path=config.metric_path,
+            metric_key=config.metric_key
+        )
+
+        return model_registry_config
+    
+
+    def get_drift_monitoring_config(self) -> DriftMonitoringConfig:
+        config = self.config.monitoring
+
+        drift_monitoring_config = DriftMonitoringConfig(
+            reference_data=config.reference_data,
+            current_data=config.current_data,
+            output_dir=config.output_dir
+        )
+    
+        return drift_monitoring_config

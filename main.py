@@ -9,6 +9,8 @@ from Condition2Cure.pipeline.stage3_cleaning import DataCleaningPipeline
 from Condition2Cure.pipeline.stage4_transformation import DataTransformationPipeline
 from Condition2Cure.pipeline.stage5_training import ModelTrainingPipeline
 from Condition2Cure.pipeline.stage6_evaluation import ModelEvaluationPipeline
+from Condition2Cure.pipeline.stage7_registry import ModelRegistryPipeline
+from Condition2Cure.pipeline.stage8_monitoring import DriftMonitoringPipeline
 
 
 
@@ -42,6 +44,14 @@ def run_stage(stage_name):
             stage = ModelEvaluationPipeline()
             stage.run()
 
+        elif stage_name == "model_registry":
+            stage = ModelRegistryPipeline()
+            stage.run()
+
+        elif stage_name == "drift_monitoring":
+            stage = DriftMonitoringPipeline()
+            stage.run()
+
         else:
             raise ValueError(f"Unknown stage: {stage_name}")
 
@@ -67,6 +77,8 @@ if __name__ == "__main__":
             "data_transformation",
             "model_training",
             "model_evaluation",
+            "model_registry",
+            "drift_monitoring"
         ]
         for stage in stages:
             run_stage(stage)

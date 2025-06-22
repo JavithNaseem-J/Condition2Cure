@@ -41,3 +41,15 @@ model_evaluation:
   label_encoder_path: artifacts/feature_engineering/label_encoder.pkl
   metrics_path: artifacts/model_evaluation/metrics.json
   cm_path: artifacts/model_evaluation/cm.png
+
+
+model_registry:
+  model_name: Condition2CureModel
+  metric_path: artifacts/model_evaluation/metrics.json
+  metric_key: f1_weighted
+
+monitoring:
+  reference_data: artifacts/data_cleaning/cleaned.csv
+  current_data: artifacts/data_cleaning/cleaned.csv
+  output_dir: artifacts/monitoring
+  

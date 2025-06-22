@@ -1,5 +1,4 @@
 pandas
-numpy
 scikit-learn
 matplotlib
 seaborn
@@ -21,7 +20,7 @@ xgboost
 ydata-profiling
 nltk
 ipywidgets
-dvc-s3
 shap
-pydantic
+evidently==0.5.1
+numpy==1.24.4
 -e .

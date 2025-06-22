@@ -59,3 +59,17 @@ class ModelEvaluationConfig:
     random_state: int
     metrics_path: Path
     cm_path: Path
+
+
+@dataclass(frozen=True)
+class ModelRegistryConfig:
+    model_name: str
+    metric_path: Path
+    metric_key: str
+
+
+@dataclass(frozen=True)
+class DriftMonitoringConfig:
+    reference_data: Path
+    current_data: Path
+    output_dir: Path
