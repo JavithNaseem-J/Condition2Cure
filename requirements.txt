@@ -18,9 +18,8 @@ dvc
 gdown
 xgboost
 ydata-profiling
-nltk
+spacy
 ipywidgets
 shap
-evidently==0.5.1
 numpy==1.24.4
 -e .

@@ -1,22 +1,19 @@
 import re
-import nltk
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
+import spacy
 
-nltk.download('stopwords')
-nltk.download('wordnet')
-
-stop_words = set(stopwords.words('english'))
-lemmatizer = WordNetLemmatizer()
+nlp = spacy.load("en_core_web_sm", disable=["parser", "ner"])
 
 def clean_text(text: str) -> str:
     """
-    Clean input review text: lowercase, remove punctuation, stopwords, lemmatize.
+    Clean input review text: lowercase, remove HTML tags and non-alphabetic characters,
+    remove stopwords, and lemmatize using SpaCy.
     """
     text = text.lower()
-    text = re.sub(r'<.*?>', '', text)    
-    text = re.sub(r'[^a-zA-Z\s]', '', text)        
-    words = text.split()
-    words = [w for w in words if w not in stop_words]
-    words = [lemmatizer.lemmatize(w) for w in words]
+    text = re.sub(r'<.*?>', '', text)
+    text = re.sub(r'[^a-zA-Z\s]', '', text)
+
+    doc = nlp(text)
+
+    words = [token.lemma_ for token in doc if not token.is_stop]
+
     return ' '.join(words)

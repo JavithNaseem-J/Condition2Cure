@@ -66,12 +66,3 @@ stages:
       - src/Condition2Cure/pipeline/stage7_registry.py
       - artifacts/model_evaluation/metrics.json
     outs: []
-
-  drift_monitoring:
-    cmd: python main.py --stage drift_monitoring
-    deps:
-      - src/Condition2Cure/pipeline/stage8_monitoring.py
-      - artifacts/data_cleaning/cleaned.csv
-    outs:
-      - artifacts/monitoring/drift_report.json
-      - artifacts/monitoring/drift_report.html
