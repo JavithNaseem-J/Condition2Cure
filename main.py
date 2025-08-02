@@ -3,50 +3,21 @@ import sys
 import argparse
 from Condition2Cure import logger
 from Condition2Cure.utils.execptions import CustomException
-from Condition2Cure.pipeline.stage1_ingestion import DataIngestionPipeline
-from Condition2Cure.pipeline.stage2_validation import DataValidationPipeline
-from Condition2Cure.pipeline.stage3_cleaning import DataCleaningPipeline
-from Condition2Cure.pipeline.stage4_transformation import DataTransformationPipeline
-from Condition2Cure.pipeline.stage5_training import ModelTrainingPipeline
-from Condition2Cure.pipeline.stage6_evaluation import ModelEvaluationPipeline
-from Condition2Cure.pipeline.stage7_registry import ModelRegistryPipeline
-
-
+from Condition2Cure.pipeline.feature_pipeline import FeaturePipeline
+from Condition2Cure.pipeline.model_pipeline import ModelPipeline
 
 
 def run_stage(stage_name):
     logger.info(f">>>>>> Stage {stage_name} started <<<<<<")
 
     try:
-        if stage_name == "data_ingestion":
-            stage = DataIngestionPipeline()
+        if stage_name == "feature_pipeline":
+            stage = FeaturePipeline()
             stage.run()
 
-        elif stage_name == "data_validation":
-            stage = DataValidationPipeline()
+        elif stage_name == "model_pipeline":
+            stage = ModelPipeline()
             stage.run()
-
-
-        elif stage_name == "data_cleaning":
-            stage = DataCleaningPipeline()
-            stage.run()
-
-        elif stage_name == "data_transformation":
-            stage = DataTransformationPipeline()
-            stage.run()
-
-        elif stage_name == "model_training":
-            stage = ModelTrainingPipeline()
-            stage.run()
-
-        elif stage_name == "model_evaluation":
-            stage = ModelEvaluationPipeline()
-            stage.run()
-
-        elif stage_name == "model_registry":
-            stage = ModelRegistryPipeline()
-            stage.run()
-
 
         else:
             raise ValueError(f"Unknown stage: {stage_name}")
@@ -67,14 +38,8 @@ if __name__ == "__main__":
         run_stage(args.stage)
     else:
         stages = [
-            "data_ingestion",
-            "data_validation",
-            "data_cleaning",
-            "data_transformation",
-            "model_training",
-            "model_evaluation",
-            "model_registry",
-            "drift_monitoring"
+            "feature_pipeline",
+            "model_pipeline"
         ]
         for stage in stages:
             run_stage(stage)

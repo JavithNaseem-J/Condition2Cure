@@ -18,7 +18,7 @@ from Condition2Cure import logger
 from Condition2Cure.entities.config_entity import ModelEvaluationConfig
 
 
-class ModelEvaluator:
+class ModelEvaluation:
     def __init__(self, config: ModelEvaluationConfig):
         self.config = config
 
