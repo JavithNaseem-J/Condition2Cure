@@ -1,9 +1,5 @@
 # 🧠 Condition2Cure: Medical Condition Prediction & Drug Recommendation
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)]()
-[![Version](https://img.shields.io/badge/version-1.0-blue)]()
-[![License](https://img.shields.io/badge/license-MIT-green)]()
-
 ## 📌 Project Overview
 
 Condition2Cure is an **end-to-end medical NLP solution** designed to predict patient medical conditions from textual descriptions and recommend the most effective drugs. It leverages advanced **Natural Language Processing (NLP)** techniques, **machine learning pipelines**, and **model management tools** to create a production-ready healthcare AI system.
