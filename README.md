@@ -1,4 +1,6 @@
-# 🧠 Condition2Cure: Medical Condition Prediction & Drug Recommendation
+# 🧠 Condition2Cure
+
+## Medical Condition Prediction & Drug Recommendation
 
 ## 📌 Project Overview
 
