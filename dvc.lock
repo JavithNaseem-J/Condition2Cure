@@ -160,3 +160,80 @@ stages:
       hash: md5
       md5: cee67cfc9f0ee4b8eeed5a02d0f62dfe
       size: 438
+  feature:
+    cmd: python main.py --stage feature_pipeline
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: d6a4725f39442a462255d3738db9b391
+      size: 1735
+    - path: config/params.yaml
+      hash: md5
+      md5: 478d8e9156b733d3e6a13959e141ddad
+      size: 160
+    - path: config/schema.yaml
+      hash: md5
+      md5: 6b1618317c0c568b852130619535d884
+      size: 162
+    - path: src/Condition2Cure/config/data_config.py
+      hash: md5
+      md5: c50b3daaf82b76880e63833d916dbc56
+      size: 3106
+    - path: src/Condition2Cure/pipeline/feature_pipeline.py
+      hash: md5
+      md5: 924c83d81642e78e37d4dc02ebe060d4
+      size: 1274
+    outs:
+    - path: artifacts/data_cleaning/cleaned.csv
+      hash: md5
+      md5: a1cbf6948cf92e93049e33b711e9a7de
+      size: 62305657
+    - path: artifacts/data_ingestion
+      hash: md5
+      md5: 60bc092a8f4681189c258a801ec95a48.dir
+      size: 114337806
+      nfiles: 2
+    - path: artifacts/data_validation/status.json
+      hash: md5
+      md5: ff7a727a93eafadc201e73379dc6f542
+      size: 35
+    - path: artifacts/feature_engineering/label_encoder.pkl
+      hash: md5
+      md5: 7679889843d8afaaee66095a1d2ee26e
+      size: 560
+  model:
+    cmd: python main.py --stage model_pipeline
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: d6a4725f39442a462255d3738db9b391
+      size: 1735
+    - path: config/params.yaml
+      hash: md5
+      md5: 478d8e9156b733d3e6a13959e141ddad
+      size: 160
+    - path: config/schema.yaml
+      hash: md5
+      md5: 6b1618317c0c568b852130619535d884
+      size: 162
+    - path: src/Condition2Cure/config/model_config.py
+      hash: md5
+      md5: 12d57ef08ae7e3340e71c15c7d061670
+      size: 2395
+    - path: src/Condition2Cure/pipeline/model_pipeline.py
+      hash: md5
+      md5: 2081867fdf15596ab5e96f6c33f12123
+      size: 948
+    outs:
+    - path: artifacts/model_evaluation/cm.png
+      hash: md5
+      md5: bc91ab23cfee7ac1c319e759637457c5
+      size: 23798
+    - path: artifacts/model_evaluation/metrics.json
+      hash: md5
+      md5: 4597e42f8579873a3aa5f8f13e49a9ef
+      size: 292
+    - path: artifacts/model_training/model.joblib
+      hash: md5
+      md5: 3b3e4ef4b5e57351e0de93f38cad16b6
+      size: 2597339

@@ -2,49 +2,57 @@ import os
 import pandas as pd
 import numpy as np
 import joblib
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.decomposition import TruncatedSVD
 from sklearn.preprocessing import LabelEncoder
-from Condition2Cure.utils.helpers import create_directories
+from Condition2Cure.utils.nlp_utils import get_embeddings_batch
 from Condition2Cure import logger
-from Condition2Cure.entities.config_entity import DataTransformationConfig
+
 
 class DataTransformation:
-    def __init__(self, config: DataTransformationConfig):
+  
+    def __init__(self, config):
+
         self.config = config
 
     def transform(self):
+
         logger.info("Loading cleaned data...")
         df = pd.read_csv(self.config.cleaned_data_path)
+        logger.info(f"Loaded {len(df)} records")
 
-        if 'clean_review' not in df.columns or self.config.target_column not in df.columns:
-            raise ValueError("Required columns missing in cleaned data.")
+        text_col = 'clean_review' if 'clean_review' in df.columns else 'review'
+        df[text_col] = df[text_col].fillna("").astype(str)
+        
+        # Remove empty reviews
+        df = df[df[text_col].str.len() > 0]
+        logger.info(f"Records after removing empty: {len(df)}")
 
-        df['clean_review'] = df['clean_review'].fillna("")
+        # Step 3: Generate BERT embeddings
+        # This is the key innovation - using pre-trained BERT instead of TF-IDF
+        logger.info("Generating BERT embeddings (this may take a few minutes)...")
+        texts = df[text_col].tolist()
+        X = get_embeddings_batch(texts)
+        logger.info(f"Embeddings shape: {X.shape}")  # Should be (n_samples, 384)
 
-        logger.info("Fitting TF-IDF vectorizer...")
-        vectorizer = TfidfVectorizer(
-            max_features=self.config.max_features,
-            ngram_range=tuple(self.config.ngram_range)
-        )
-        X_tfidf = vectorizer.fit_transform(df['clean_review'])
-
-        logger.info("Reducing dimensionality using TruncatedSVD...")
-        svd = TruncatedSVD(n_components=self.config.svd_components)
-        X_reduced = svd.fit_transform(X_tfidf)
-
-        logger.info("Encoding labels...")
+        # Step 4: Encode target labels
+        logger.info("Encoding condition labels...")
         label_encoder = LabelEncoder()
         y = label_encoder.fit_transform(df[self.config.target_column])
+        
+        n_classes = len(label_encoder.classes_)
+        logger.info(f"Found {n_classes} unique conditions")
 
-        logger.info("Saving vectorizer, SVD, label encoder...")
-        create_directories([os.path.dirname(self.config.vectorizer_path)])
-        joblib.dump(vectorizer, self.config.vectorizer_path)
-        joblib.dump(svd, self.config.svd_path)
+        os.makedirs(os.path.dirname(self.config.features_path), exist_ok=True)
+        
+        np.save(self.config.features_path, X)
+        np.save(self.config.labels_path, y)
+        
         joblib.dump(label_encoder, self.config.label_encoder_path)
 
-        logger.info("Saving features and labels...")
-        np.save(self.config.features_path, X_reduced)
-        np.save(self.config.labels_path, y)
-
-        logger.info("Data transformation complete.")
+        logger.info("Data transformation complete!")
+        logger.info(f"Features saved to: {self.config.features_path}")
+        
+        return {
+            "n_samples": len(df),
+            "n_features": 384,
+            "n_classes": n_classes
+        }

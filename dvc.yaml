@@ -4,16 +4,14 @@ stages:
     deps:
       - src/Condition2Cure/pipeline/feature_pipeline.py
       - src/Condition2Cure/config/data_config.py
-      - src/Condition2Cure/config/config.yaml
-      - src/Condition2Cure/config/params.yaml
-      - src/Condition2Cure/config/schema.yaml
+      - config/config.yaml
+      - config/params.yaml
+      - config/schema.yaml
     
     outs:
       - artifacts/data_ingestion
       - artifacts/data_validation/status.json
       - artifacts/data_cleaning/cleaned.csv
-      - artifacts/feature_engineering/vectorizer.pkl
-      - artifacts/feature_engineering/svd.pkl
       - artifacts/feature_engineering/label_encoder.pkl
 
 
@@ -22,9 +20,9 @@ stages:
     deps:
       - src/Condition2Cure/pipeline/model_pipeline.py
       - src/Condition2Cure/config/model_config.py
-      - src/Condition2Cure/config/config.yaml
-      - src/Condition2Cure/config/params.yaml
-      - src/Condition2Cure/config/schema.yaml
+      - config/config.yaml
+      - config/params.yaml
+      - config/schema.yaml
     
     outs:
       - artifacts/model_training/model.joblib

@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 import mlflow
 from mlflow.tracking import MlflowClient
+from mlflow.exceptions import MlflowException
 from Condition2Cure.entities.config_entity import ModelRegistryConfig
 from Condition2Cure import logger
 
@@ -16,8 +17,12 @@ class ModelRegistry:
         return float(metrics.get(self.config.metric_key))
 
     def get_latest_model_by_stage(self, stage: str):
-        versions = self.client.get_latest_versions(name=self.config.model_name, stages=[stage])
-        return versions[0] if versions else None
+        try:
+            versions = self.client.get_latest_versions(name=self.config.model_name, stages=[stage])
+            return versions[0] if versions else None
+        except MlflowException:
+            # Model not registered yet
+            return None
 
     def promote_model(self, version):
         self.client.transition_model_version_stage(
@@ -33,7 +38,8 @@ class ModelRegistry:
         new_score = self.load_metric()
         staging_model = self.get_latest_model_by_stage("Staging")
         if not staging_model:
-            logger.warning("No staging model found.")
+            logger.warning("No staging model found. Skipping promotion check.")
+            logger.info("Register a model to 'Staging' stage first to enable promotion workflow.")
             return
 
         prod_model = self.get_latest_model_by_stage("Production")
