@@ -1,23 +1,50 @@
+"""
+Data Ingestion
+==============
+Download and extract data from Google Drive.
+
+Run: python -m Condition2Cure.components.data_ingestion
+"""
+import os
 import gdown
 import zipfile
-from pathlib import Path
-from Condition2Cure.utils.helpers import *
-from Condition2Cure.entities.config_entity import DataIngestionConfig
+from Condition2Cure import logger
+from Condition2Cure.config import config
 
-class DataIngestion:
-    def __init__(self, config: DataIngestionConfig):
-        self.config = config
 
-    def download_file(self):
-        if not os.path.exists(self.config.local_data_file):
-            gdown.download(id=self.config.source_id, output=self.config.local_data_file, quiet=False)
-            print(f"[INFO] Downloaded file: {self.config.local_data_file}")
-        else:
-            print(f"[INFO] File already exists: {self.config.local_data_file} ({get_size(Path(self.config.local_data_file))})")
+def download_data() -> str:
+    """Download data from Google Drive if not exists."""
+    local_file = os.path.join(config.artifacts_root, "data_ingestion", "data.zip")
+    unzip_dir = os.path.join(config.artifacts_root, "data_ingestion")
+    
+    os.makedirs(unzip_dir, exist_ok=True)
+    
+    # Download if not exists
+    if not os.path.exists(local_file):
+        logger.info("Downloading data from Google Drive...")
+        gdown.download(id=config.data_source_id, output=local_file, quiet=False)
+        logger.info(f"Downloaded: {local_file}")
+    else:
+        logger.info(f"Data already exists: {local_file}")
+    
+    # Extract
+    if not os.path.exists(config.raw_data_path):
+        logger.info("Extracting zip file...")
+        with zipfile.ZipFile(local_file, 'r') as zip_ref:
+            zip_ref.extractall(unzip_dir)
+        logger.info(f"Extracted to: {unzip_dir}")
+    
+    return config.raw_data_path
 
-    def extract_zip_file(self):
-        unzip_path = self.config.unzip_dir
-        os.makedirs(unzip_path, exist_ok=True)
-        with zipfile.ZipFile(self.config.local_data_file, 'r') as zip_ref:
-            zip_ref.extractall(unzip_path)
-            print(f"[INFO] Extracted files to: {unzip_path}")
+
+# ============================================
+# DVC Entry Point
+# ============================================
+if __name__ == "__main__":
+    logger.info("=" * 60)
+    logger.info(">>>>>> Stage: Data Ingestion started <<<<<<")
+    logger.info("=" * 60)
+    
+    download_data()
+    
+    logger.info(">>>>>> Stage: Data Ingestion completed <<<<<<")

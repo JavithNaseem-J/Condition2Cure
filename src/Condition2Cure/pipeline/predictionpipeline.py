@@ -1,16 +1,12 @@
 """
 Prediction Pipeline
 ===================
-Handles real-time predictions from user input.
-
-Flow:
-1. User enters symptom description
-2. Text is converted to BERT embedding
-3. XGBoost predicts the condition
-4. Label encoder converts number back to condition name
+Real-time predictions from user input.
+Used by Streamlit app for inference.
 """
 import joblib
 import numpy as np
+from Condition2Cure.config import config
 from Condition2Cure.utils.nlp_utils import get_embedding
 
 
@@ -25,15 +21,11 @@ class PredictionPipeline:
     
     def __init__(self):
         """Load the trained model and label encoder."""
-        # Load model (trained XGBoost)
-        self.model = joblib.load("artifacts/model_training/model.joblib")
-        
-        # Load label encoder (to convert numbers back to condition names)
-        self.label_encoder = joblib.load("artifacts/feature_engineering/label_encoder.pkl")
-        
+        self.model = joblib.load(config.model_path)
+        self.label_encoder = joblib.load(config.label_encoder_path)
         print(f"Model loaded! Can predict {len(self.label_encoder.classes_)} conditions")
 
-    def predict(self, text: str):
+    def predict(self, text: str) -> tuple:
         """
         Predict medical condition from symptom description.
         
@@ -42,42 +34,32 @@ class PredictionPipeline:
             
         Returns:
             tuple: (condition_name, confidence_score)
-            
-        Example:
-            >>> pipeline = PredictionPipeline()
-            >>> condition, confidence = pipeline.predict("severe headache and nausea")
-            >>> print(f"{condition} ({confidence:.1%})")
-            Migraine (87.3%)
         """
         if not text or len(text.strip()) < 5:
-            raise ValueError("Please provide a valid description")
+            raise ValueError("Please provide a valid description (at least 5 characters)")
         
-        # Step 1: Convert text to BERT embedding
+        # Convert text to BERT embedding
         embedding = get_embedding(text)
-        
-        # Step 2: Reshape for prediction (model expects 2D array)
         X = embedding.reshape(1, -1)
         
-        # Step 3: Get prediction
+        # Get prediction
         pred_class = self.model.predict(X)[0]
         
-        # Step 4: Get confidence (probability of predicted class)
+        # Get confidence
         if hasattr(self.model, 'predict_proba'):
             proba = self.model.predict_proba(X)[0]
             confidence = float(proba[pred_class])
         else:
             confidence = 1.0
         
-        # Step 5: Convert class number to condition name
+        # Convert to condition name
         condition = self.label_encoder.inverse_transform([pred_class])[0]
         
         return condition, confidence
 
-    def predict_top_k(self, text: str, k: int = 3):
+    def predict_top_k(self, text: str, k: int = 3) -> list:
         """
         Get top K most likely conditions.
-        
-        Useful when confidence is low to show alternatives.
         
         Args:
             text: Symptom description
@@ -89,13 +71,9 @@ class PredictionPipeline:
         embedding = get_embedding(text)
         X = embedding.reshape(1, -1)
         
-        # Get probabilities for all classes
         proba = self.model.predict_proba(X)[0]
-        
-        # Get top K indices
         top_indices = np.argsort(proba)[::-1][:k]
         
-        # Build results
         results = []
         for idx in top_indices:
             condition = self.label_encoder.inverse_transform([idx])[0]

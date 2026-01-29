@@ -1,37 +1,71 @@
-import re
+"""
+Data Cleaning
+=============
+Clean and preprocess raw data.
+
+Run: python -m Condition2Cure.components.data_cleaning
+"""
 import os
 import pandas as pd
-from Condition2Cure.utils.helpers import create_directories
-from Condition2Cure.entities.config_entity import DataCleaningConfig
-from Condition2Cure.utils.nlp_utils import clean_text
 from Condition2Cure import logger
-import spacy
+from Condition2Cure.config import config
+from Condition2Cure.utils.nlp_utils import clean_text
 
-class DataCleaning:
-    def __init__(self, config: DataCleaningConfig):
-        self.config = config
-        self.nlp = spacy.load("en_core_web_sm", disable=["parser", "ner"])
 
-    def clean(self):
-        logger.info("Reading raw data...")
-        data = pd.read_csv(self.config.data_path)
+def clean_data(input_path: str = None, output_path: str = None) -> pd.DataFrame:
+    """
+    Clean raw data: filter conditions, clean text.
+    
+    Args:
+        input_path: Path to raw data (uses config default if None)
+        output_path: Path to save cleaned data (uses config default if None)
+    
+    Returns:
+        Cleaned DataFrame
+    """
+    input_path = input_path or config.raw_data_path
+    output_path = output_path or config.cleaned_data_path
+    
+    logger.info(f"Loading raw data: {input_path}")
+    df = pd.read_csv(input_path)
+    logger.info(f"Raw data: {len(df)} rows")
+    
+    # Filter to selected conditions (from config, not hardcoded!)
+    df = df[df[config.target_column].isin(config.conditions)]
+    logger.info(f"After filtering conditions: {len(df)} rows")
+    
+    # Validate required columns exist
+    if config.text_column not in df.columns:
+        raise ValueError(f"Text column '{config.text_column}' not found")
+    if config.target_column not in df.columns:
+        raise ValueError(f"Target column '{config.target_column}' not found")
+    
+    # Clean text
+    logger.info("Cleaning review texts...")
+    df['clean_review'] = df[config.text_column].astype(str).apply(clean_text)
+    
+    # Remove empty reviews
+    df = df[df['clean_review'].str.len() > 0]
+    df = df.dropna(subset=['clean_review', config.target_column])
+    
+    logger.info(f"After cleaning: {len(df)} rows")
+    
+    # Save
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    df.to_csv(output_path, index=False)
+    logger.info(f"Saved cleaned data: {output_path}")
+    
+    return df
 
-        df = data[(data['condition'] == 'Birth Control') | (data['condition'] == 'Depression') | 
-                  (data['condition'] == 'Pain') | (data['condition'] == 'Anxiety') | 
-                  (data['condition'] == 'Acne') | (data['condition'] == 'Diabetes, Type 2') | 
-                  (data['condition'] == 'High Blood Pressure')]
 
-        if 'review' not in df.columns or 'condition' not in df.columns:
-            raise ValueError("Input data must contain 'review' and 'condition' columns.")
-
-        logger.info("Cleaning review texts...")
-        texts = df['review'].astype(str).tolist()
-
-        df['clean_review'] = df['review'].astype(str).apply(clean_text)
-
-        df.dropna(subset=['clean_review', 'condition'], inplace=True)
-
-        create_directories([os.path.dirname(self.config.cleaned_data_path)])
-        df.to_csv(self.config.cleaned_data_path, index=False, na_rep="")
-
-        logger.info(f"Cleaned data saved at: {self.config.cleaned_data_path}")
+# ============================================
+# DVC Entry Point
+# ============================================
+if __name__ == "__main__":
+    logger.info("=" * 60)
+    logger.info(">>>>>> Stage: Data Cleaning started <<<<<<")
+    logger.info("=" * 60)
+    
+    clean_data()
+    
+    logger.info(">>>>>> Stage: Data Cleaning completed <<<<<<")

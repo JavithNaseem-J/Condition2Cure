@@ -1,126 +1,67 @@
+"""
+Utility Functions
+=================
+Simple, focused helper functions.
+No unnecessary decorators or over-engineering.
+"""
 import os
-from box.exceptions import BoxValueError
-import yaml
-from Condition2Cure import logger
 import json
+import yaml
 import joblib
-from ensure import ensure_annotations
-from box import ConfigBox
 from pathlib import Path
-from typing import Any
+from typing import Any, Dict
+from Condition2Cure import logger
 
 
-
-@ensure_annotations
-def read_yaml(path_to_yaml: Path) -> ConfigBox:
-    """reads yaml file and returns
-
-    Args:
-        path_to_yaml (str): path like input
-
-    Raises:
-        ValueError: if yaml file is empty
-        e: empty file
-
-    Returns:
-        ConfigBox: ConfigBox type
-    """
-    try:
-        with open(path_to_yaml) as yaml_file:
-            content = yaml.safe_load(yaml_file)
-            logger.info(f"yaml file: {path_to_yaml} loaded successfully")
-            return ConfigBox(content)
-    except BoxValueError:
-        raise ValueError("yaml file is empty")
-    except Exception as e:
-        raise e
-    
+def read_yaml(path: str) -> Dict:
+    """Read YAML file and return as dictionary."""
+    with open(path, "r") as f:
+        content = yaml.safe_load(f)
+    logger.info(f"Loaded YAML: {path}")
+    return content
 
 
-@ensure_annotations
-def create_directories(path_to_directories: list, verbose=True):
-    """create list of directories
-
-    Args:
-        path_to_directories (list): list of path of directories
-        ignore_log (bool, optional): ignore if multiple dirs is to be created. Defaults to False.
-    """
-    for path in path_to_directories:
-        os.makedirs(path, exist_ok=True)
-        if verbose:
-            logger.info(f"created directory at: {path}")
-
-
-@ensure_annotations
-def save_json(path: Path, data: dict):
-    """save json data
-
-    Args:
-        path (Path): path to json file
-        data (dict): data to be saved in json file
-    """
+def save_json(path: str, data: Dict) -> None:
+    """Save dictionary to JSON file."""
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w") as f:
         json.dump(data, f, indent=4)
-
-    logger.info(f"json file saved at: {path}")
-
+    logger.info(f"Saved JSON: {path}")
 
 
-
-@ensure_annotations
-def load_json(path: Path) -> ConfigBox:
-    """load json files data
-
-    Args:
-        path (Path): path to json file
-
-    Returns:
-        ConfigBox: data as class attributes instead of dict
-    """
-    with open(path) as f:
+def load_json(path: str) -> Dict:
+    """Load JSON file as dictionary."""
+    with open(path, "r") as f:
         content = json.load(f)
-
-    logger.info(f"json file loaded succesfully from: {path}")
-    return ConfigBox(content)
-
-
-@ensure_annotations
-def save_bin(data: object, path: Path):
-    """save binary file
-
-    Args:
-        data (Any): data to be saved as binary
-        path (Path): path to binary file
-    """
-    joblib.dump(value=data, filename=path)
-    logger.info(f"binary file saved at: {path}")
+    logger.info(f"Loaded JSON: {path}")
+    return content
 
 
-@ensure_annotations
-def load_bin(path: Path) -> Any:
-    """load binary data
-
-    Args:
-        path (Path): path to binary file
-
-    Returns:
-        Any: object stored in the file
-    """
-    data = joblib.load(path)
-    logger.info(f"binary file loaded from: {path}")
-    return data
+def save_model(model: Any, path: str) -> None:
+    """Save model using joblib."""
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    joblib.dump(model, path)
+    logger.info(f"Saved model: {path}")
 
 
+def load_model(path: str) -> Any:
+    """Load model using joblib."""
+    model = joblib.load(path)
+    logger.info(f"Loaded model: {path}")
+    return model
 
-@ensure_annotations
-def get_size(path: Path) -> str:
-    """get size in KB
 
-    Args:
-        path (Path): path of the file
+def ensure_dir(path: str) -> None:
+    """Create directory if it doesn't exist."""
+    os.makedirs(path, exist_ok=True)
 
-    Returns:
-        str: size in KB
-    """
-    size_in_kb = round(os.path.getsize(path)/1024)
-    return f"~ {size_in_kb} KB"
+
+def get_file_size(path: str) -> str:
+    """Get file size in human-readable format."""
+    size_bytes = os.path.getsize(path)
+    if size_bytes < 1024:
+        return f"{size_bytes} B"
+    elif size_bytes < 1024 * 1024:
+        return f"{size_bytes / 1024:.1f} KB"
+    else:
+        return f"{size_bytes / (1024 * 1024):.1f} MB"
