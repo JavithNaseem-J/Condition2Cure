@@ -210,9 +210,9 @@ This is an **educational project**. Not for real medical diagnosis. Always consu
 
 ---
 
-## 👤 Author
+## 📄 License
 
-**Javith Naseem J**
+This project is licensed under the [MIT License](LICENSE).
 
-[![GitHub](https://img.shields.io/badge/GitHub-JavithNaseem--J-black?style=flat&logo=github)](https://github.com/JavithNaseem-J)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?style=flat&logo=linkedin)](https://linkedin.com/in/yourprofile)
+---
+https://github.com/user-attachments/assets/ab03fd73-39bb-43d0-b3e1-c8db9cd15fc1
