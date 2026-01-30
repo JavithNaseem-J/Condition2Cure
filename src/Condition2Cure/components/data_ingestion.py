@@ -1,10 +1,3 @@
-"""
-Data Ingestion
-==============
-Download and extract data from Google Drive.
-
-Run: python -m Condition2Cure.components.data_ingestion
-"""
 import os
 import gdown
 import zipfile
@@ -37,9 +30,7 @@ def download_data() -> str:
     return config.raw_data_path
 
 
-# ============================================
-# DVC Entry Point
-# ============================================
+
 if __name__ == "__main__":
     logger.info("=" * 60)
     logger.info(">>>>>> Stage: Data Ingestion started <<<<<<")

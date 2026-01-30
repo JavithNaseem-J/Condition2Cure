@@ -1,10 +1,3 @@
-"""
-Data Cleaning
-=============
-Clean and preprocess raw data.
-
-Run: python -m Condition2Cure.components.data_cleaning
-"""
 import os
 import pandas as pd
 from Condition2Cure import logger
@@ -13,16 +6,7 @@ from Condition2Cure.utils.nlp_utils import clean_text
 
 
 def clean_data(input_path: str = None, output_path: str = None) -> pd.DataFrame:
-    """
-    Clean raw data: filter conditions, clean text.
-    
-    Args:
-        input_path: Path to raw data (uses config default if None)
-        output_path: Path to save cleaned data (uses config default if None)
-    
-    Returns:
-        Cleaned DataFrame
-    """
+
     input_path = input_path or config.raw_data_path
     output_path = output_path or config.cleaned_data_path
     
@@ -58,9 +42,6 @@ def clean_data(input_path: str = None, output_path: str = None) -> pd.DataFrame:
     return df
 
 
-# ============================================
-# DVC Entry Point
-# ============================================
 if __name__ == "__main__":
     logger.info("=" * 60)
     logger.info(">>>>>> Stage: Data Cleaning started <<<<<<")

@@ -1,11 +1,3 @@
-"""
-Model Evaluation
-================
-Evaluate model on held-out TEST set only.
-No data leakage - test set was split during transformation.
-
-Run: python -m Condition2Cure.components.model_evaluation
-"""
 import os
 import numpy as np
 import joblib
@@ -23,15 +15,7 @@ from Condition2Cure.utils.helpers import save_json, load_model
 
 
 def evaluate_model() -> dict:
-    """
-    Evaluate model on held-out test set.
-    
-    IMPORTANT: Uses test set that was split during transformation.
-    This is the ONLY place the test set is used.
-    
-    Returns:
-        Dictionary with evaluation metrics
-    """
+
     # Load test data (held out during transformation)
     logger.info("Loading held-out test data...")
     X_test = np.load(config.test_features_path)
@@ -109,9 +93,7 @@ def evaluate_model() -> dict:
     return metrics
 
 
-# ============================================
-# DVC Entry Point
-# ============================================
+
 if __name__ == "__main__":
     logger.info("=" * 60)
     logger.info(">>>>>> Stage: Model Evaluation started <<<<<<")

@@ -1,10 +1,3 @@
-"""
-Data Validation
-===============
-Validate data schema before processing.
-
-Run: python -m Condition2Cure.components.data_validation
-"""
 import os
 import pandas as pd
 from Condition2Cure import logger
@@ -13,18 +6,7 @@ from Condition2Cure.utils.helpers import save_json
 
 
 def validate_data(data_path: str = None) -> bool:
-    """
-    Validate that data has required columns.
-    
-    Args:
-        data_path: Path to CSV file (uses config default if None)
-    
-    Returns:
-        True if validation passes
-        
-    Raises:
-        ValueError if required columns are missing
-    """
+
     data_path = data_path or config.raw_data_path
     
     logger.info(f"Validating data: {data_path}")
@@ -51,9 +33,7 @@ def validate_data(data_path: str = None) -> bool:
     return True
 
 
-# ============================================
-# DVC Entry Point
-# ============================================
+
 if __name__ == "__main__":
     logger.info("=" * 60)
     logger.info(">>>>>> Stage: Data Validation started <<<<<<")

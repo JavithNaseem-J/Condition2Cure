@@ -1,11 +1,3 @@
-"""
-Data Transformation
-===================
-Convert text to BERT embeddings and split into train/test.
-IMPORTANT: Split happens HERE, once, to prevent data leakage.
-
-Run: python -m Condition2Cure.components.data_transformation
-"""
 import os
 import numpy as np
 import joblib
@@ -18,18 +10,7 @@ from Condition2Cure.utils.nlp_utils import get_embeddings_batch
 
 
 def transform_data(input_path: str = None) -> dict:
-    """
-    Transform cleaned data: create embeddings, encode labels, split train/test.
-    
-    CRITICAL: Train/test split happens here ONCE to prevent data leakage.
-    The test set is saved separately and used ONLY for final evaluation.
-    
-    Args:
-        input_path: Path to cleaned data (uses config default if None)
-    
-    Returns:
-        Dictionary with transformation info
-    """
+
     input_path = input_path or config.cleaned_data_path
     
     logger.info(f"Loading cleaned data: {input_path}")
@@ -58,10 +39,7 @@ def transform_data(input_path: str = None) -> dict:
     n_classes = len(label_encoder.classes_)
     logger.info(f"Found {n_classes} unique conditions: {list(label_encoder.classes_)}")
     
-    # ============================================
-    # CRITICAL: Split train/test ONCE here
-    # This prevents data leakage!
-    # ============================================
+
     logger.info(f"Splitting data: {1-config.test_size:.0%} train, {config.test_size:.0%} test")
     X_train, X_test, y_train, y_test = train_test_split(
         X, y,
@@ -101,9 +79,7 @@ def transform_data(input_path: str = None) -> dict:
     }
 
 
-# ============================================
-# DVC Entry Point
-# ============================================
+
 if __name__ == "__main__":
     logger.info("=" * 60)
     logger.info(">>>>>> Stage: Data Transformation started <<<<<<")

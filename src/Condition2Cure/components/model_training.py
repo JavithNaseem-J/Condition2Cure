@@ -1,11 +1,3 @@
-"""
-Model Training
-==============
-Train XGBoost with Optuna hyperparameter tuning.
-Uses ONLY training data (no data leakage).
-
-Run: python -m Condition2Cure.components.model_training
-"""
 import os
 import numpy as np
 import mlflow
@@ -113,9 +105,6 @@ def train_model(n_trials: int = None) -> dict:
     return model_info
 
 
-# ============================================
-# DVC Entry Point
-# ============================================
 if __name__ == "__main__":
     logger.info("=" * 60)
     logger.info(">>>>>> Stage: Model Training started <<<<<<")

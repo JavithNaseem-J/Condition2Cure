@@ -1,9 +1,3 @@
-"""
-Condition2Cure - Unified Configuration
-=======================================
-Single source of truth for all configuration.
-No more 5 layers of indirection!
-"""
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List
@@ -11,7 +5,6 @@ from typing import List
 
 @dataclass
 class Config:
-    """All configuration in one place."""
     
     # === Paths ===
     artifacts_root: str = "artifacts"
@@ -22,14 +15,14 @@ class Config:
     cleaned_data_path: str = "artifacts/data_cleaning/cleaned.csv"
     
     # Feature paths
-    features_path: str = "artifacts/features/X_train.npy"
-    labels_path: str = "artifacts/features/y_train.npy"
-    test_features_path: str = "artifacts/features/X_test.npy"
-    test_labels_path: str = "artifacts/features/y_test.npy"
-    label_encoder_path: str = "artifacts/features/label_encoder.pkl"
+    features_path: str = "artifacts/feature_engineering/X.npy"
+    labels_path: str = "artifacts/feature_engineering/y.npy"
+    test_features_path: str = "artifacts/feature_engineering/X_test.npy"
+    test_labels_path: str = "artifacts/feature_engineering/y_test.npy"
+    label_encoder_path: str = "artifacts/feature_engineering/label_encoder.pkl"
     
     # Model paths
-    model_path: str = "artifacts/model/model.joblib"
+    model_path: str = "artifacts/model_training/model.joblib"
     metrics_path: str = "artifacts/model/metrics.json"
     confusion_matrix_path: str = "artifacts/model/confusion_matrix.png"
     
@@ -39,11 +32,13 @@ class Config:
     optuna_trials: int = 20
     cv_folds: int = 3
     
+    # Debug: Limit data size for faster testing (set to None for full training)
+    debug_sample_size: int = 2000
+    
     # === Data Parameters ===
     target_column: str = "condition"
     text_column: str = "review"
     
-    # Conditions to include (moved from hardcoded filter)
     conditions: List[str] = field(default_factory=lambda: [
         "Birth Control",
         "Depression",
@@ -54,7 +49,6 @@ class Config:
         "High Blood Pressure"
     ])
     
-    # === Schema (for validation) ===
     required_columns: List[str] = field(default_factory=lambda: [
         "drugName", "condition", "review", "rating", "usefulCount"
     ])

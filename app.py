@@ -1,11 +1,3 @@
-"""
-Condition2Cure - Streamlit Web App
-==================================
-A simple web interface for predicting medical conditions
-from patient symptom descriptions.
-
-Author: [Your Name]
-"""
 import streamlit as st
 import pandas as pd
 from Condition2Cure.pipeline.predictionpipeline import PredictionPipeline

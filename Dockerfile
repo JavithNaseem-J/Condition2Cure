@@ -1,6 +1,3 @@
-# Condition2Cure - Simple Dockerfile
-# For portfolio demonstration
-
 FROM python:3.11-slim
 
 # Set working directory
